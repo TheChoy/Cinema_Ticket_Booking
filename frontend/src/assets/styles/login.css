@@ -1,0 +1,161 @@
+.login-page {
+  position: fixed;
+  inset: 0;        
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 48px 40px;
+  background: #ffffff;
+  border: 1px solid #27272a;
+  border-radius: 16px;
+}
+
+.brand {
+  margin-bottom: 36px;
+  text-align: center;
+}
+
+.brand h1 {
+  margin: 0 0 6px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #000000;
+  letter-spacing: -0.3px;
+}
+
+.brand p {
+  margin: 0;
+  font-size: 14px;
+  color: #71717a;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.error-box {
+  padding: 10px 14px;
+  background: #2d1515;
+  border: 1px solid #7f1d1d;
+  border-radius: 8px;
+  color: #fca5a5;
+  font-size: 13px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: #a1a1aa;
+}
+
+.forgot {
+  font-size: 12px;
+  color: #6366f1;
+  text-decoration: none;
+}
+
+.forgot:hover {
+  text-decoration: underline;
+}
+
+input {
+  width: 100%;
+  padding: 10px 14px;
+  background: #09090b;
+  border: 1px solid #27272a;
+  border-radius: 8px;
+  color: #fafafa;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+input::placeholder {
+  color: #3f3f46;
+}
+
+input:focus {
+  border-color: #6366f1;
+}
+
+.input-wrap {
+  position: relative;
+}
+
+.input-wrap input {
+  padding-right: 60px;
+}
+
+.toggle-pw {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #52525b;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.toggle-pw:hover {
+  color: #a1a1aa;
+}
+
+.btn-login {
+  margin-top: 4px;
+  padding: 11px;
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-login:hover:not(:disabled) {
+  background: #4f52d4;
+}
+
+.btn-login:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.register-hint {
+  margin-top: 28px;
+  text-align: center;
+  font-size: 13px;
+  color: #52525b;
+}
+
+.register-hint a {
+  color: #6366f1;
+  text-decoration: none;
+}
+
+.register-hint a:hover {
+  text-decoration: underline;
+}
