@@ -1,24 +1,59 @@
 package middleware
 
 import (
+	"context"
+	"time"
+
+	firebase "firebase.google.com/go/v4"
+	"firebase.google.com/go/v4/auth"
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v4"
+	"go.mongodb.org/mongo-driver/bson"
+
+	"github.com/TheChoy/Cinema_Ticket_Booking/database"
+	"github.com/TheChoy/Cinema_Ticket_Booking/internal/models"
 )
+var firebaseAuth *auth.Client
 
-func CheckMiddleware(c *fiber.Ctx) error {
+func InitFirebase() error {
+	app, err := firebase.NewApp(context.Background(), nil)
+	if err != nil {
+		return err
+	}
+	firebaseAuth, err = app.Auth(context.Background())
+	return err
+}
 
-	user := c.Locals("user")
+func AuthMiddleware(c *fiber.Ctx) error {
+	authHeader := c.Get("Authorization")
+	if len(authHeader) < 8 || authHeader[:7] != "Bearer " {
+		return fiber.ErrUnauthorized
+	}
+	idToken := authHeader[7:]
 
-	if user == nil {
+	token, err := firebaseAuth.VerifyIDToken(context.Background(), idToken)
+	if err != nil {
 		return fiber.ErrUnauthorized
 	}
 
-	token := user.(*jwt.Token)
+	c.Locals("uid", token.UID)
+	c.Locals("email", token.Claims["email"])
+	return c.Next()
+}
 
-	claims := token.Claims.(jwt.MapClaims)
+func AdminOnly(c *fiber.Ctx) error {
+	uid := c.Locals("uid").(string)
 
-	if claims["role"] != "admin" {
+	col := database.DB.Collection("users")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	var user models.User
+	if err := col.FindOne(ctx, bson.M{"uid": uid}).Decode(&user); err != nil {
 		return fiber.ErrUnauthorized
+	}
+
+	if user.Role != "admin" {
+		return fiber.ErrForbidden
 	}
 
 	return c.Next()
