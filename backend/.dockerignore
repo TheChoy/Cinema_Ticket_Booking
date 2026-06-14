@@ -1,0 +1,6 @@
+.env
+.git
+tmp
+*.log
+main
+app.exe
