@@ -43,18 +43,3 @@ func Register(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusCreated).JSON(user)
 }
-
-func GetMe(c *fiber.Ctx) error {
-	uid := c.Locals("uid").(string)
-
-	col := database.DB.Collection("users")
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	var user models.User
-	if err := col.FindOne(ctx, bson.M{"uid": uid}).Decode(&user); err != nil {
-		return fiber.ErrNotFound
-	}
-
-	return c.JSON(user)
-}

@@ -10,13 +10,31 @@ import (
 func Setup(app *fiber.App) {
 	// Public
 	app.Post("/auth/login", middleware.AuthMiddleware, handlers.Register)
+	app.Get("/movies", handlers.GetMovies)
+	app.Get("/showtimes", handlers.GetShowtimes)
+	app.Get("/seats", handlers.GetSeats)
 
 	// Protected
 	protected := app.Group("/", middleware.AuthMiddleware)
-	protected.Get("/books", handlers.GetBooks)
-	protected.Get("/books/:id", handlers.GetBook)
+	protected.Get("/users/me", handlers.GetMe)
+	protected.Put("/users/me", handlers.UpdateMe)
+	protected.Post("/bookings", handlers.CreateBooking)
+	protected.Get("/bookings/me", handlers.GetMyBookings)
+	protected.Put("/bookings/:id/pay", handlers.PayBooking)
+
 
 	// Admin
 	admin := app.Group("/admin", middleware.AuthMiddleware, middleware.AdminOnly)
-	admin.Post("/books", handlers.CreateBook)
+	admin.Post("/movies", handlers.CreateMovie)
+	admin.Put("/movies/:id", handlers.UpdateMovie)
+	admin.Delete("/movies/:id", handlers.DeleteMovie)
+	admin.Post("/showtimes", handlers.CreateShowtime)
+	admin.Put("/showtimes/:id", handlers.UpdateShowtime)
+	admin.Delete("/showtimes/:id", handlers.DeleteShowtime)
+	admin.Post("/seats/generate", handlers.GenerateSeats)
+	admin.Get("/users", handlers.GetUsers)
+	admin.Put("/users/:id/role", handlers.UpdateUserRole)
+	admin.Get("/bookings", handlers.GetAllBookings)
+	admin.Put("/bookings/:id", handlers.UpdateBooking)
+	admin.Delete("/bookings/:id", handlers.CancelBooking)
 }

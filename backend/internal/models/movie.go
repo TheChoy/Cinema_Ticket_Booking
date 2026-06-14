@@ -9,6 +9,7 @@ type Movie struct {
 	ID          primitive.ObjectID `bson:"_id,omitempty" json:"id"`
 	Title       string             `bson:"title" json:"title"`
 	Description string             `bson:"description" json:"description"`
+	Genre 		string 			   `bson:"genre" json:"genre"`
 	PosterURL   string             `bson:"poster_url" json:"poster_url"`
 	Duration    int                `bson:"duration" json:"duration"` // นาที
 	CreatedAt   time.Time          `bson:"created_at" json:"created_at"`

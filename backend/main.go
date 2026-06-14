@@ -15,6 +15,7 @@ import (
 func main() {
 	config.Load()
 	database.ConnectMongo()
+  	database.ConnectRedis()
 
 	if err := middleware.InitFirebase(); err != nil {
 		log.Fatalf("Firebase init error: %v", err)
@@ -22,7 +23,10 @@ func main() {
 
 	app := fiber.New()
 
+	app.Static("/uploads", "./uploads")
+
 	services.SeedBooks()
+  	services.StartBookingExpirer()
 
 	routes.Setup(app)
 
