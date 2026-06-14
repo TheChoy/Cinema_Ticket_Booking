@@ -327,20 +327,55 @@ func GetAllBookings(c *fiber.Ctx) error {
 	defer cancel()
 
 	bookingCol := database.DB.Collection("bookings")
-	cursor, err := bookingCol.Find(ctx, bson.M{})
+
+	pipeline := mongo.Pipeline{
+		{{Key: "$lookup", Value: bson.M{
+			"from":         "users",
+			"localField":   "user_id",
+			"foreignField": "_id",
+			"as":           "user",
+		}}},
+		{{Key: "$unwind", Value: "$user"}},
+		{{Key: "$lookup", Value: bson.M{
+			"from":         "showtimes",
+			"localField":   "showtime_id",
+			"foreignField": "_id",
+			"as":           "showtime",
+		}}},
+		{{Key: "$unwind", Value: "$showtime"}},
+		{{Key: "$lookup", Value: bson.M{
+			"from":         "movies",
+			"localField":   "showtime.movie_id",
+			"foreignField": "_id",
+			"as":           "movie",
+		}}},
+		{{Key: "$unwind", Value: "$movie"}},
+		{{Key: "$project", Value: bson.M{
+			"_id":            1,
+			"booking_number": 1,
+			"status":         1,
+			"total_price":    1,
+			"created_at":     1,
+			"seat_ids":       1,
+			"user_email":     "$user.email",
+			"movie_title":    "$movie.title",
+			"start_time":     "$showtime.start_time",
+		}}},
+	}
+
+	cursor, err := bookingCol.Aggregate(ctx, pipeline)
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 	defer cursor.Close(ctx)
 
-	var bookings []models.Booking
-	if err := cursor.All(ctx, &bookings); err != nil {
+	var results []bson.M
+	if err := cursor.All(ctx, &results); err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	return c.JSON(bookings)
+	return c.JSON(results)
 }
-
 func UpdateBooking(c *fiber.Ctx) error {
 	id, err := primitive.ObjectIDFromHex(c.Params("id"))
 	if err != nil {

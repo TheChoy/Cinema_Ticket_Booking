@@ -45,4 +45,5 @@ func Setup(app *fiber.App) {
 	admin.Get("/bookings", handlers.GetAllBookings)
 	admin.Put("/bookings/:id", handlers.UpdateBooking)
 	admin.Delete("/bookings/:id", handlers.CancelBooking)
+	admin.Get("/event-logs", handlers.GetEventLogs)
 }

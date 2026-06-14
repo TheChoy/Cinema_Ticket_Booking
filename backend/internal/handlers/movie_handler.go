@@ -123,25 +123,33 @@ func UpdateMovie(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.StatusBadRequest)
 	}
 
-	movie := new(models.Movie)
-	if err := c.BodyParser(movie); err != nil {
-		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
+	update := bson.M{
+		"title":       c.FormValue("title"),
+		"description": c.FormValue("description"),
+		"genre":       c.FormValue("genre"),
+		"status":      c.FormValue("status"),
+	}
+
+	if duration := c.FormValue("duration"); duration != "" {
+		var d int
+		fmt.Sscanf(duration, "%d", &d)
+		update["duration"] = d
+	}
+
+	if file, err := c.FormFile("poster"); err == nil {
+		url, err := uploadPoster(file)
+		if err != nil {
+			log.Println("uploadPoster error:", err)
+			return c.SendStatus(fiber.StatusInternalServerError)
+		}
+		update["poster_url"] = url
 	}
 
 	col := database.DB.Collection("movies")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	update := bson.M{"$set": bson.M{
-		"title":       movie.Title,
-		"description": movie.Description,
-		"poster_url":  movie.PosterURL,
-		"duration":    movie.Duration,
-		"status":      movie.Status,
-		"genre":       movie.Genre,
-	}}
-
-	if _, err := col.UpdateOne(ctx, bson.M{"_id": id}, update); err != nil {
+	if _, err := col.UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$set": update}); err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
