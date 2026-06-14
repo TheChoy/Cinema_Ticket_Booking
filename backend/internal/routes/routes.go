@@ -26,6 +26,7 @@ func Setup(app *fiber.App) {
 	protected.Put("/users/me", handlers.UpdateMe)
 	protected.Post("/bookings", handlers.CreateBooking)
 	protected.Get("/bookings/me", handlers.GetMyBookings)
+	protected.Get("/bookings/:id", handlers.GetBookingByID)
 	protected.Put("/bookings/:id/pay", handlers.PayBooking)
 
 
