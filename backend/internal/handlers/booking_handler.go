@@ -12,6 +12,7 @@ import (
 
 	"github.com/TheChoy/Cinema_Ticket_Booking/database"
 	"github.com/TheChoy/Cinema_Ticket_Booking/internal/models"
+	"github.com/TheChoy/Cinema_Ticket_Booking/internal/ws"
 )
 
 func CreateBooking(c *fiber.Ctx) error {
@@ -107,11 +108,20 @@ func CreateBooking(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	// อัพเดท status ที่นั่งเป็น booked
+	// อัพเดท status ที่นั่งเป็น locked
 	seatCol.UpdateMany(ctx, bson.M{"_id": bson.M{"$in": seatIDs}}, bson.M{"$set": bson.M{
 		"status":     "locked",
 		"booking_id": booking.ID,
 	}})
+
+	// Broadcast seat update
+	for _, seatID := range body.SeatIDs {
+		ws.H.Broadcast(body.ShowtimeID, ws.Message{
+			Type:   "seat_update",
+			SeatID: seatID,
+			Status: "locked",
+		})
+	}
 
 	return c.Status(fiber.StatusCreated).JSON(booking)
 }
@@ -209,6 +219,14 @@ func PayBooking(c *fiber.Ctx) error {
 		"status": "booked",
 	}})
 
+	// Broadcast seat update
+	for _, seatID := range booking.SeatIDs {
+		ws.H.Broadcast(booking.ShowtimeID.Hex(), ws.Message{
+			Type:   "seat_update",
+			SeatID: seatID.Hex(),
+			Status: "booked",
+		})
+	}
 	// ปลด Redis Lock
 	for _, seatID := range booking.SeatIDs {
 		database.RDB.Del(ctx, "seat_lock:"+seatID.Hex())
@@ -284,6 +302,15 @@ func CancelBooking(c *fiber.Ctx) error {
 		"status":     "available",
 		"booking_id": nil,
 	}})
+
+	// Broadcast seat update
+	for _, seatID := range booking.SeatIDs {
+		ws.H.Broadcast(booking.ShowtimeID.Hex(), ws.Message{
+			Type:   "seat_update",
+			SeatID: seatID.Hex(),
+			Status: "available",
+		})
+	}
 
 	// อัพเดท status booking เป็น cancelled
 	bookingCol.UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$set": bson.M{"status": "cancelled"}})

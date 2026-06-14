@@ -2,6 +2,8 @@ package routes
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/websocket/v2"
+
 
 	"github.com/TheChoy/Cinema_Ticket_Booking/internal/handlers"
 	"github.com/TheChoy/Cinema_Ticket_Booking/internal/middleware"
@@ -14,6 +16,9 @@ func Setup(app *fiber.App) {
 	app.Get("/showtimes", handlers.GetShowtimes)
 	app.Get("/seats", handlers.GetSeats)
 
+	// WebSocket - real-time seat status
+	app.Get("/ws/showtimes/:showtime_id", websocket.New(handlers.WSSeatStatus))
+	
 	// Protected
 	protected := app.Group("/", middleware.AuthMiddleware)
 	protected.Get("/users/me", handlers.GetMe)
@@ -21,6 +26,7 @@ func Setup(app *fiber.App) {
 	protected.Post("/bookings", handlers.CreateBooking)
 	protected.Get("/bookings/me", handlers.GetMyBookings)
 	protected.Put("/bookings/:id/pay", handlers.PayBooking)
+
 
 
 	// Admin
