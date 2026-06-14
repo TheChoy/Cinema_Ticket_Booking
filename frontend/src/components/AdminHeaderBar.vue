@@ -1,6 +1,13 @@
 <template>
-  <header class="header">
-    <router-link to="/home" class="header-logo">🎬 CinemaTicket</router-link>
+  <header class="header admin-header">
+    <router-link to="/admin/home" class="header-logo">🎬 CinemaTicket Admin</router-link>
+
+    <nav class="admin-nav">
+      <router-link to="/admin/movies">Movie</router-link>
+      <router-link to="/admin/logs">log</router-link>
+      <router-link to="/admin/bookings">การจอง</router-link>
+      <router-link to="/admin/users">ผู้ใช้</router-link>
+    </nav>
 
     <div class="header-actions" ref="dropdownRef">
       <button class="btn-profile" @click="toggleDropdown" aria-label="เมนูผู้ใช้">
@@ -9,12 +16,6 @@
 
       <div v-if="open" class="dropdown">
         <div class="dropdown-item">{{ email }}</div>
-        <router-link to="/profile" class="dropdown-item" @click="open = false">
-          โปรไฟล์
-        </router-link>
-        <router-link to="/history" class="dropdown-item" @click="open = false">
-          ประวัติการจอง
-        </router-link>
         <div class="dropdown-divider" />
         <button class="dropdown-item danger" @click="handleLogout">
           ออกจากระบบ
@@ -43,7 +44,6 @@ function handleLogout() {
   router.push('/login')
 }
 
-// ปิด dropdown เมื่อคลิกนอก
 function handleClickOutside(e) {
   if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
     open.value = false

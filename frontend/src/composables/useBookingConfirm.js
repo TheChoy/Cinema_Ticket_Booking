@@ -51,17 +51,17 @@ export function useBookingConfirm(bookingId) {
     }
   }
 
-  async function payBooking() {
-    paying.value = true
-    try {
-      await api.put(`/bookings/${bookingId}/pay`)
-      router.push(`/bookings/${bookingId}/success`)
-    } catch {
-      error.value = 'ชำระเงินไม่สำเร็จ กรุณาลองใหม่'
-    } finally {
-      paying.value = false
-    }
+ async function payBooking() {
+  paying.value = true
+  try {
+    await api.put(`/bookings/${bookingId}/pay`)
+    router.push({ path: '/history', query: { success: '1' } })
+  } catch {
+    error.value = 'ชำระเงินไม่สำเร็จ กรุณาลองใหม่'
+  } finally {
+    paying.value = false
   }
+}
 
   function formatDateTime(iso) {
     return new Date(iso).toLocaleString('th-TH', {
