@@ -4,8 +4,7 @@
 
     <div class="admin-content">
       <div class="admin-top">
-        <input v-model="filterEmail" placeholder="ค้นหาอีเมล..." />
-        <input v-model="filterMovie" placeholder="ค้นหาชื่อหนัง..." />
+        <input v-model="searchQuery" placeholder="ค้นหา..." />
         <input v-model="filterDate" type="date" />
         <select v-model="filterStatus">
           <option value="">ทุกสถานะ</option>
@@ -66,8 +65,7 @@ import AdminHeaderBar from '../components/AdminHeaderBar.vue'
 import { useAdminBookings } from '../composables/useAdminBookings.js'
 import '../assets/styles/admin-movies.css'
 
-const { filteredBookings, loading, filterStatus, filterEmail, filterMovie, filterDate, updateStatus, cancelBooking } = useAdminBookings()
-
+const { filteredBookings, loading, filterStatus, searchQuery, filterDate, updateStatus, cancelBooking } = useAdminBookings()
 function statusClass(status) {
   if (status === 'paid') return 'badge-showing'
   if (status === 'cancelled') return 'badge-soon'

@@ -7,8 +7,7 @@ export function useAdminBookings() {
   const bookings = ref([])
   const loading = ref(false)
   const filterStatus = ref('')
-  const filterEmail = ref('')
-  const filterMovie = ref('')
+  const searchQuery = ref('')
   const filterDate = ref('')
 
   async function fetchBookings() {
@@ -29,10 +28,13 @@ export function useAdminBookings() {
   }
 
   const filteredBookings = computed(() => {
+    const q = searchQuery.value.toLowerCase()
     return bookings.value
       .filter(b => !filterStatus.value || b.status === filterStatus.value)
-      .filter(b => !filterEmail.value || b.user_email?.toLowerCase().includes(filterEmail.value.toLowerCase()))
-      .filter(b => !filterMovie.value || b.movie_title?.toLowerCase().includes(filterMovie.value.toLowerCase()))
+      .filter(b => !q ||
+        b.user_email?.toLowerCase().includes(q) ||
+        b.movie_title?.toLowerCase().includes(q)
+      )
       .filter(b => !filterDate.value || toBangkokDateString(b.created_at) === filterDate.value)
   })
 
@@ -73,7 +75,7 @@ export function useAdminBookings() {
 
   return {
     bookings, filteredBookings, loading,
-    filterStatus, filterEmail, filterMovie, filterDate,
+    filterStatus, searchQuery, filterDate,
     fetchBookings, updateStatus, cancelBooking
   }
 }

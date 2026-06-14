@@ -99,10 +99,12 @@ const route = useRoute()
 const router = useRouter()
 const showtimeId = route.params.id
 
+console.log('showtimeId:', showtimeId)
+
 const {
   seats, showtime, selectedSeats, groupedSeats,
   loading, error,
-  fetchSeats, fetchShowtime, toggleSeat, isSelected, totalPrice
+  fetchSeats, fetchShowtime,connectWS, toggleSeat, isSelected, totalPrice
 } = useSeat(showtimeId)
 
 function formatTime(iso) {
@@ -120,7 +122,7 @@ async function confirmBooking() {
       seat_ids: selectedSeats.value.map(s => s.id)
     })
     const booking = res.data
-    router.push(`/bookings/${booking.id}`)
+    router.push(`/bookings/${booking.id}`) 
   } catch (err) {
     console.error(err)
     alert('เกิดข้อผิดพลาด กรุณาลองใหม่')
@@ -130,5 +132,6 @@ async function confirmBooking() {
 onMounted(() => {
   fetchSeats()
   fetchShowtime()
+  connectWS()
 })
 </script>

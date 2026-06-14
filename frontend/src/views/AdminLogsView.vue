@@ -8,8 +8,7 @@
           <option value="">ทุก Event</option>
           <option v-for="e in eventTypes" :key="e" :value="e">{{ e }}</option>
         </select>
-        <input v-model="filterUserID" placeholder="User ID (ObjectID)" />
-        <input v-model="filterBookingID" placeholder="Booking ID (ObjectID)" />
+        <input v-model="filterEmail" placeholder="ค้นหาอีเมล..." />
         <input v-model="filterDateFrom" type="date" />
         <input v-model="filterDateTo" type="date" />
       </div>
@@ -23,21 +22,23 @@
               <th>เวลา</th>
               <th>Event</th>
               <th>Message</th>
-              <th>User ID</th>
-              <th>Booking ID</th>
-              <th>Seat IDs</th>
+              <th>Email</th>
+              <th>หนัง</th>
+              <th>Booking No.</th>
+              <th>ที่นั่ง</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="l in filteredLogs" :key="l.id">
+            <tr v-for="l in filteredLogs" :key="l._id">
               <td>{{ formatDate(l.created_at) }}</td>
               <td>
                 <span class="badge" :class="eventClass(l.event)">{{ l.event }}</span>
               </td>
               <td>{{ l.message }}</td>
-              <td class="mono">{{ l.user_id || '-' }}</td>
-              <td class="mono">{{ l.booking_id || '-' }}</td>
-              <td>{{ l.seat_ids?.length || 0 }}</td>
+              <td>{{ l.user_email || '-' }}</td>
+              <td>{{ l.movie_title || '-' }}</td>
+              <td>{{ l.booking_number || '-' }}</td>
+              <td>{{ l.seats?.join(', ') || '-' }}</td>
             </tr>
           </tbody>
         </table>
@@ -53,7 +54,7 @@ import '../assets/styles/admin-movies.css'
 
 const {
   filteredLogs, loading, eventTypes,
-  filterEvent, filterUserID, filterBookingID, filterDateFrom, filterDateTo
+  filterEvent, filterEmail, filterDateFrom, filterDateTo
 } = useAdminLogs()
 
 function eventClass(event) {

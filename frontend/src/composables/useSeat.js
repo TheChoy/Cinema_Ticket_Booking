@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
 import api from '../services/api'
 
 export function useSeat(showtimeId) {
@@ -7,8 +7,7 @@ export function useSeat(showtimeId) {
   const selectedSeats = ref([])
   const loading = ref(false)
   const error = ref('')
-  const MAX_SEATS = 8
-
+  let ws = null
 
   async function fetchSeats() {
     loading.value = true
@@ -23,14 +22,32 @@ export function useSeat(showtimeId) {
   }
 
   async function fetchShowtime() {
-  try {
-    const res = await api.get('/showtimes')
-    const all = res.data || []
-    showtime.value = all.find(s => s.id === showtimeId) || null
-  } catch {}
-}
+    try {
+      const res = await api.get('/showtimes')
+      showtime.value = res.data?.find(s => s.id === showtimeId) || null
+    } catch {}
+  }
 
-  // จัดกลุ่มตาม row
+  function connectWS() {
+    ws = new WebSocket(`ws://localhost:8081/ws/showtimes/${showtimeId}`)
+    ws.onmessage = (e) => {
+      const msg = JSON.parse(e.data)
+      if (msg.type === 'seat_update') {
+        const seat = seats.value.find(s => s.id === msg.seat_id)
+        if (seat) seat.status = msg.status
+
+        // ถ้าที่นั่งที่เลือกไว้โดน lock/booked ให้เอาออก
+        if (msg.status !== 'available') {
+          selectedSeats.value = selectedSeats.value.filter(s => s.id !== msg.seat_id)
+        }
+      }
+    }
+    ws.onclose = () => {
+      // reconnect อัตโนมัติถ้าหลุด
+      setTimeout(() => connectWS(), 3000)
+    }
+  }
+
   const groupedSeats = computed(() => {
     const groups = {}
     seats.value.forEach(s => {
@@ -40,16 +57,19 @@ export function useSeat(showtimeId) {
     return groups
   })
 
-function toggleSeat(seat) {
-  if (seat.status !== 'available') return
-  const idx = selectedSeats.value.findIndex(s => s.id === seat.id)
-  if (idx === -1) {
-    if (selectedSeats.value.length >= MAX_SEATS) return // ไม่ให้เลือกเกิน
-    selectedSeats.value.push(seat)
-  } else {
-    selectedSeats.value.splice(idx, 1)
+  const MAX_SEATS = 8
+
+  function toggleSeat(seat) {
+    if (seat.status !== 'available') return
+    const idx = selectedSeats.value.findIndex(s => s.id === seat.id)
+    if (idx === -1) {
+      if (selectedSeats.value.length >= MAX_SEATS) return
+      selectedSeats.value.push(seat)
+    } else {
+      selectedSeats.value.splice(idx, 1)
+    }
   }
-}
+
   function isSelected(seat) {
     return selectedSeats.value.some(s => s.id === seat.id)
   }
@@ -59,9 +79,14 @@ function toggleSeat(seat) {
     return selectedSeats.value.length * showtime.value.price
   })
 
+  onUnmounted(() => {
+    if (ws) ws.close()
+  })
+
   return {
     seats, showtime, selectedSeats, groupedSeats,
     loading, error,
-    fetchSeats, fetchShowtime, toggleSeat, isSelected, totalPrice
+    fetchSeats, fetchShowtime, connectWS,
+    toggleSeat, isSelected, totalPrice
   }
 }

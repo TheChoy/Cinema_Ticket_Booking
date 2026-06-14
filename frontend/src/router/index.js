@@ -9,8 +9,7 @@ import HistoryView from '../views/HistoryView.vue'
 import AdminBookingsView from '../views/AdminBookingsView.vue'
 import AdminUsersView from '../views/AdminUsersView.vue'
 import AdminLogsView from '../views/AdminLogsView.vue'
-
-
+import ProfileView from '../views/ProfileView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -27,6 +26,7 @@ const router = createRouter({
     { path: '/admin/bookings', component: AdminBookingsView, meta: { requiresAuth: true, requiresAdmin: true } },
     { path: '/admin/users', component: AdminUsersView, meta: { requiresAuth: true, requiresAdmin: true } },
     { path: '/admin/logs', component: AdminLogsView, meta: { requiresAuth: true, requiresAdmin: true } },
+{ path: '/profile', component: ProfileView, meta: { requiresAuth: true } },
 
   ],
 })

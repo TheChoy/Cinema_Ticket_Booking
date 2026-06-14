@@ -16,6 +16,9 @@
 
       <div v-if="open" class="dropdown">
         <div class="dropdown-item">{{ email }}</div>
+        <router-link to="/profile" class="dropdown-item" @click="open = false">
+          โปรไฟล์
+        </router-link>
         <div class="dropdown-divider" />
         <button class="dropdown-item danger" @click="handleLogout">
           ออกจากระบบ
