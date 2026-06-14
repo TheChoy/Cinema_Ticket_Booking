@@ -9,14 +9,14 @@
 
       <div v-if="open" class="dropdown">
         <router-link to="/profile" class="dropdown-item" @click="open = false">
-          👤 โปรไฟล์
+          โปรไฟล์
         </router-link>
         <router-link to="/history" class="dropdown-item" @click="open = false">
-          🎟️ ประวัติการจอง
+          ประวัติการจอง
         </router-link>
         <div class="dropdown-divider" />
         <button class="dropdown-item danger" @click="handleLogout">
-          🚪 ออกจากระบบ
+          ออกจากระบบ
         </button>
       </div>
     </div>

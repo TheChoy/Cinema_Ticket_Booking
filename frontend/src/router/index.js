@@ -1,7 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
-import HomeView from '../views/HomeView.vue'
+import HomeView from '../views/Homeview.vue'
 import MovieDetailView from '../views/MovieDetailView.vue'
+import SeatView from '../views/SeatView.vue'
+import BookingConfirmView from '../views/BookingConfirmView.vue'
+import AdminHomeView from '../views/AdminHomeView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -10,14 +13,18 @@ const router = createRouter({
     { path: '/login', component: LoginView },
     { path: '/home', component: HomeView, meta: { requiresAuth: true } },
     { path: '/movies/:id', component: MovieDetailView, meta: { requiresAuth: true } },
+    { path: '/showtimes/:id/seats', component: SeatView, meta: { requiresAuth: true } },
+    { path: '/bookings/:id', component: BookingConfirmView, meta: { requiresAuth: true } },
+    { path: '/admin/home', component: AdminHomeView, meta: { requiresAuth: true, requiresAdmin: true } },
   ],
 })
 
 router.beforeEach((to, from) => {
   const token = localStorage.getItem('token')
-  if (to.meta.requiresAuth && !token) {
-    return '/login'
-  }
+  const role = localStorage.getItem('role')
+
+  if (to.meta.requiresAuth && !token) return '/login'
+  if (to.meta.requiresAdmin && role !== 'admin') return '/home'
 })
 
 export default router

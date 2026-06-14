@@ -1,66 +1,97 @@
 <template>
-  <div>
-    <div v-if="loading">loading...</div>
-    <div v-else-if="error">{{ error }}</div>
-    <div v-else>
-      <h1>{{ movie.title }}</h1>
-      <p>ID หนัง: {{ movie.id }}</p>
-      <p>Description: {{ movie.description }}</p>
-      <p>Genre: {{ movie.genre }}</p>
-      <p>Duration: {{ movie.duration }} นาที</p>
-      <img :src="movie.poster_url" :alt="movie.title" width="200" />
+  <div class="detail-page">
+    <HeaderBar />
 
-      <hr />
-      <h2>รอบฉาย</h2>
-      <div v-if="loadingShowtimes">loading showtimes...</div>
-      <div v-else-if="!showtimes.length">ไม่มีรอบฉาย</div>
-      <div v-for="s in showtimes" :key="s.id">
-        <p>ID รอบ: {{ s.id }}</p>
-        <p>ห้อง: {{ s.room }}</p>
-        <p>เริ่ม: {{ s.start_time }}</p>
-        <p>จบ: {{ s.end_time }}</p>
-        <p>จำนวนที่นั่ง: {{ s.seat_count }}</p>
-        <p>ราคา: {{ s.price }} บาท</p>
-        <hr />
-      </div>
+    <div class="detail-content">
+      <div v-if="loading" class="state-box">⏳ กำลังโหลด...</div>
+      <div v-else-if="error" class="state-box">⚠️ {{ error }}</div>
+
+      <template v-else-if="movie">
+        <!-- Movie Info -->
+        <div class="movie-section">
+          <div class="movie-poster-wrap">
+            <img v-if="movie.poster_url" :src="movie.poster_url" :alt="movie.title" />
+            <div v-else class="poster-placeholder">🎬</div>
+          </div>
+          <div class="movie-meta">
+            <h1>{{ movie.title }}</h1>
+            <div class="meta-tags">
+              <span class="tag">{{ movie.genre }}</span>
+              <span class="tag">{{ movie.duration }} นาที</span>
+            </div>
+            <p class="meta-desc">{{ movie.description }}</p>
+          </div>
+        </div>
+
+        <!-- Showtimes -->
+        <div class="showtime-section">
+          <h2>รอบฉาย</h2>
+
+          <div v-if="!showtimes.length" class="state-box">ไม่มีรอบฉาย</div>
+
+          <div
+            v-for="(times, date) in groupedShowtimes"
+            :key="date"
+            class="date-group"
+          >
+            <div class="date-label">{{ date }}</div>
+            <div class="showtime-list">
+              <label v-for="s in times" :key="s.id">
+                <input
+                  class="showtime-radio"
+                  type="radio"
+                  name="showtime"
+                  :value="s.id"
+                  v-model="selectedShowtime"
+                />
+                <div class="showtime-card">
+                  <div class="showtime-left">
+                    <span class="showtime-time">
+                      {{ formatTime(s.start_time) }} - {{ formatTime(s.end_time) }}
+                    </span>
+                    <span class="showtime-room">{{ s.room }}</span>
+                  </div>
+                  <div class="showtime-right">
+                    <span class="showtime-price">฿{{ s.price }}</span>
+                    <span class="showtime-seats">{{ s.seat_count }} ที่นั่ง</span>
+                  </div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <button
+            class="btn-book"
+            :disabled="!selectedShowtime"
+            @click="goToSeat"
+          >
+            {{ selectedShowtime ? 'เลือกที่นั่ง' : 'กรุณาเลือกรอบก่อน' }}
+          </button>
+        </div>
+      </template>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-import api from '../services/api'
+import { onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import HeaderBar from '../components/HeaderBar.vue'
+import { useMovieDetail } from '../composables/useMovieDetail.js'
+import '../assets/styles/movie-detail.css'
 
 const route = useRoute()
+const router = useRouter()
 const id = route.params.id
 
-const movie = ref({})
-const showtimes = ref([])
-const loading = ref(false)
-const loadingShowtimes = ref(false)
-const error = ref('')
+const {
+  movie, showtimes, groupedShowtimes,
+  selectedShowtime, loading, error,
+  fetchMovie, fetchShowtimes, formatTime
+} = useMovieDetail(id)
 
-async function fetchMovie() {
-  loading.value = true
-  try {
-    const res = await api.get(`/movies/${id}`)
-    movie.value = res.data
-  } catch (err) {
-    error.value = 'โหลดหนังไม่สำเร็จ'
-  } finally {
-    loading.value = false
-  }
-}
-
-async function fetchShowtimes() {
-  loadingShowtimes.value = true
-  try {
-    const res = await api.get(`/showtimes`, { params: { movie_id: id } })
-    showtimes.value = res.data || []
-  } finally {
-    loadingShowtimes.value = false
-  }
+function goToSeat() {
+  router.push(`/showtimes/${selectedShowtime.value}/seats`)
 }
 
 onMounted(() => {

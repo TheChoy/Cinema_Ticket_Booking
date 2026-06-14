@@ -1,0 +1,403 @@
+.confirm-page {
+  min-height: 100vh;
+  background: #f9fafb;
+}
+
+.confirm-content {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+}
+
+.confirm-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.confirm-header {
+  background: #111;
+  color: #fff;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.confirm-header h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.booking-number {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.confirm-movie {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.confirm-poster {
+  width: 70px;
+  border-radius: 8px;
+  object-fit: cover;
+  aspect-ratio: 2/3;
+  flex-shrink: 0;
+  background: #f3f4f6;
+}
+
+.confirm-movie-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: center;
+}
+
+.confirm-movie-title {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.confirm-movie-meta {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.confirm-details {
+  padding: 1.25rem 1.5rem;
+}
+
+.confirm-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 8px 0;
+  border-bottom: 1px solid #f9fafb;
+  font-size: 0.9rem;
+}
+
+.confirm-row:last-child {
+  border-bottom: none;
+}
+
+.confirm-label {
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+.confirm-value {
+  font-weight: 500;
+  text-align: right;
+}
+
+.seats-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
+.seat-tag {
+  background: #f3f4f6;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 0.8rem;
+}
+
+.confirm-total {
+  padding: 1.25rem 1.5rem;
+  border-top: 1px dashed #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-label {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.total-price {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.confirm-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn-pay {
+  width: 100%;
+  padding: 13px;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-pay:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+}
+
+.btn-pay:hover:not(:disabled) {
+  background: #333;
+}
+
+.btn-back {
+  width: 100%;
+  padding: 11px;
+  background: none;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.btn-back:hover {
+  background: #f9fafb;
+}
+
+.error-box {
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.state-box {
+  text-align: center;
+  padding: 3rem;
+  color: #9ca3af;
+}
+
+.countdown-bar {
+  padding: 12px 1.5rem;
+  border-bottom: 1px solid #f3f4f6;
+  background: #fafafa;
+}
+
+.countdown-text {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.countdown-urgent {
+  color: #dc2626;
+  font-weight: 700;
+}
+
+.countdown-track {
+  height: 4px;
+  background: #f3f4f6;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.countdown-fill {
+  height: 100%;
+  background: #111;
+  border-radius: 999px;
+  transition: width 1s linear, background 0.3s;
+}
+
+.countdown-fill.urgent {
+  background: #dc2626;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  width: 100%;
+  max-width: 520px;
+  padding-bottom: 2rem;
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.modal-header h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.modal-back {
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.payment-options {
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: border-color 0.15s;
+}
+
+.payment-option.active:hover {
+  border-color: #111;
+}
+
+.payment-option.disabled {
+  background: #f9fafb;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.payment-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.payment-info {
+  flex: 1;
+}
+
+.payment-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.payment-desc {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.payment-arrow {
+  font-size: 1.2rem;
+  color: #9ca3af;
+}
+
+.coming-soon-badge {
+  font-size: 0.7rem;
+  background: #f3f4f6;
+  color: #6b7280;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.qr-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  gap: 12px;
+}
+
+.qr-amount {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.qr-box {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.qr-hint {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.btn-confirm-pay {
+  width: 100%;
+  padding: 13px;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.btn-confirm-pay:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+}
+
+.btn-confirm-pay:hover:not(:disabled) {
+  background: #333;
+}

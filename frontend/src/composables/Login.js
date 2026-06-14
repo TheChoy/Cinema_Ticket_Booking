@@ -16,7 +16,7 @@ export function Login() {
     loading.value = true
     try {
       const userCredential = await signInWithEmailAndPassword(auth, form.email, form.password)
-      const token = await userCredential.user.getIdToken()
+      const token = await userCredential.user.getIdToken(true)
 
       // ส่ง token ไป backend เพื่อ verify + ดึง user_id/role จาก MongoDB
       const res = await api.post('/auth/login', {}, {
@@ -32,8 +32,13 @@ export function Login() {
       localStorage.setItem('role', user.role)
       localStorage.setItem('email', user.email)
 
-      await router.push('/home')
-    } catch (err) {
+      if (user.role === 'admin') {
+        await router.push('/admin/home')
+      } else {
+        await router.push('/home')
+      }
+      
+      } catch (err) {
       console.error(err)
       errorMsg.value =
         err.code === 'auth/invalid-credential'
