@@ -10,6 +10,7 @@ import (
 
 	"github.com/TheChoy/Cinema_Ticket_Booking/database"
 	"github.com/TheChoy/Cinema_Ticket_Booking/internal/ws"
+	"github.com/TheChoy/Cinema_Ticket_Booking/internal/models"
 )
 
 func StartBookingExpirer() {
@@ -101,6 +102,21 @@ func expireBookings() {
 		}})
 
 		bookingCol.UpdateOne(ctx, bson.M{"_id": b.ID}, bson.M{"$set": bson.M{"status": "cancelled"}})
+
+			// Publish event log: booking_timeout
+		bookingID := b.ID.(primitive.ObjectID)
+		var seatIDs []primitive.ObjectID
+		for _, s := range b.SeatIDs {
+			seatIDs = append(seatIDs, s.(primitive.ObjectID))
+		}
+		database.PublishEventLog(models.EventLog{
+			ID:        primitive.NewObjectID(),
+			Event:     "booking_timeout",
+			BookingID: &bookingID,
+			SeatIDs:   seatIDs,
+			Message:   "Booking expired and cancelled automatically",
+			CreatedAt: time.Now(),
+		})
 
 		// Broadcast seat update
 		showtimeID := b.ShowtimeID.(primitive.ObjectID).Hex()

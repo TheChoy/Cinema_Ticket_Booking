@@ -16,6 +16,7 @@ func main() {
 	config.Load()
 	database.ConnectMongo()
   	database.ConnectRedis()
+	database.ConnectRabbitMQ()
 
 	if err := middleware.InitFirebase(); err != nil {
 		log.Fatalf("Firebase init error: %v", err)
@@ -25,8 +26,8 @@ func main() {
 
 	app.Static("/uploads", "./uploads")
 
-	services.SeedBooks()
   	services.StartBookingExpirer()
+	services.StartEventLogWorker()
 
 	routes.Setup(app)
 

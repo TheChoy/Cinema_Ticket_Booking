@@ -52,7 +52,16 @@ func CreateBooking(c *fiber.Ctx) error {
 			return c.SendStatus(fiber.StatusInternalServerError)
 		}
 		if !ok {
-			return c.Status(fiber.StatusConflict).JSON(fiber.Map{"message": "seat " + seatID + " is being booked by someone else"})
+			// Publish event log: lock_failed
+			seatID, _ := primitive.ObjectIDFromHex(seatID)
+			database.PublishEventLog(models.EventLog{
+				ID:        primitive.NewObjectID(),
+				Event:     "lock_failed",
+				SeatIDs:   []primitive.ObjectID{seatID},
+				Message:   "Seat lock failed - already locked by another user",
+				CreatedAt: time.Now(),
+			})
+			return c.Status(fiber.StatusConflict).JSON(fiber.Map{"message": "seat " + lockKey + " is being booked by someone else"})
 		}
 	}
 
@@ -107,6 +116,17 @@ func CreateBooking(c *fiber.Ctx) error {
 	if _, err := bookingCol.InsertOne(ctx, booking); err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
+	
+	// Publish event log: booking_success
+	database.PublishEventLog(models.EventLog{
+		ID:        primitive.NewObjectID(),
+		Event:     "booking_success",
+		UserID:    &user.ID,
+		BookingID: &booking.ID,
+		SeatIDs:   seatIDs,
+		Message:   fmt.Sprintf("User %s booked %d seat(s)", user.Email, len(seatIDs)),
+		CreatedAt: time.Now(),
+	})
 
 	// อัพเดท status ที่นั่งเป็น locked
 	seatCol.UpdateMany(ctx, bson.M{"_id": bson.M{"$in": seatIDs}}, bson.M{"$set": bson.M{
@@ -315,6 +335,16 @@ func CancelBooking(c *fiber.Ctx) error {
 	// อัพเดท status booking เป็น cancelled
 	bookingCol.UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$set": bson.M{"status": "cancelled"}})
 
+	// Publish event log: seat_release
+	database.PublishEventLog(models.EventLog{
+		ID:        primitive.NewObjectID(),
+		Event:     "seat_release",
+		BookingID: &booking.ID,
+		SeatIDs:   booking.SeatIDs,
+		Message:   "Booking cancelled by admin, seats released",
+		CreatedAt: time.Now(),
+	})
+	
 	// ปลด Redis Lock
 	for _, seatID := range booking.SeatIDs {
 		database.RDB.Del(ctx, "seat_lock:"+seatID.Hex())
