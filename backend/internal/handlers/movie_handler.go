@@ -1,23 +1,24 @@
 package handlers
 
 import (
-    "context"
-    "fmt"
-    "mime/multipart"
-    "time"
+	"context"
+	"fmt"
 	"io"
 	"log"
+	"mime/multipart"
 	"os"
+	"time"
 
-    // "cloud.google.com/go/storage"
-    "github.com/gofiber/fiber/v2"
+	// "cloud.google.com/go/storage"
+	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
-    "go.mongodb.org/mongo-driver/bson/primitive"
-    // "google.golang.org/api/option"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 
-    // "github.com/TheChoy/Cinema_Ticket_Booking/config"
-    "github.com/TheChoy/Cinema_Ticket_Booking/database"
-    "github.com/TheChoy/Cinema_Ticket_Booking/internal/models"
+	// "google.golang.org/api/option"
+
+	// "github.com/TheChoy/Cinema_Ticket_Booking/config"
+	"github.com/TheChoy/Cinema_Ticket_Booking/database"
+	"github.com/TheChoy/Cinema_Ticket_Booking/internal/models"
 )
 
 func uploadPoster(file *multipart.FileHeader) (string, error) {
@@ -85,6 +86,7 @@ func CreateMovie(c *fiber.Ctx) error {
 }
 
 func GetMovies(c *fiber.Ctx) error {
+
 	col := database.DB.Collection("movies")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -95,7 +97,7 @@ func GetMovies(c *fiber.Ctx) error {
 		filter["title"] = bson.M{"$regex": search, "$options": "i"}
 	}
 	if genre := c.Query("genre"); genre != "" {
-		filter["genre"] = genre
+		filter["genre"] = bson.M{"$regex": genre, "$options": "i"}
 	}
 	if status := c.Query("status"); status != "" {
 		filter["status"] = status
@@ -161,4 +163,23 @@ func DeleteMovie(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{"message": "deleted"})
+}
+
+func GetMovieByID(c *fiber.Ctx) error {
+	id, err := primitive.ObjectIDFromHex(c.Params("id"))
+	if err != nil {
+		return c.SendStatus(fiber.StatusBadRequest)
+	}
+
+	col := database.DB.Collection("movies")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	var movie models.Movie
+	err = col.FindOne(ctx, bson.M{"_id": id}).Decode(&movie)
+	if err != nil {
+		return c.SendStatus(fiber.StatusNotFound)
+	}
+
+	return c.JSON(movie)
 }

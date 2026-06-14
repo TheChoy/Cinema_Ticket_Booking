@@ -13,12 +13,13 @@ func Setup(app *fiber.App) {
 	// Public
 	app.Post("/auth/login", middleware.AuthMiddleware, handlers.Register)
 	app.Get("/movies", handlers.GetMovies)
+	app.Get("/movies/:id", handlers.GetMovieByID)
 	app.Get("/showtimes", handlers.GetShowtimes)
 	app.Get("/seats", handlers.GetSeats)
 
 	// WebSocket - real-time seat status
 	app.Get("/ws/showtimes/:showtime_id", websocket.New(handlers.WSSeatStatus))
-	
+
 	// Protected
 	protected := app.Group("/", middleware.AuthMiddleware)
 	protected.Get("/users/me", handlers.GetMe)
