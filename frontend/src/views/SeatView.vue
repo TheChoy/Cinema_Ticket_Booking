@@ -92,7 +92,7 @@ import { onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import HeaderBar from '../components/HeaderBar.vue'
 import { useSeat } from '../composables/useSeat.js'
-import api from '../services/api'  // ← เพิ่มตรงนี้
+import api from '../services/api'
 import '../assets/styles/seat.css'
 
 const route = useRoute()

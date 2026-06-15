@@ -28,10 +28,8 @@ export function useMovies() {
     }
   }
 
-  // re-fetch ทุกครั้งที่ filter เปลี่ยน
   watch([status, genre], () => fetchMovies())
 
-  // search รอ 400ms หลังพิมพ์หยุด
   let searchTimer = null
   watch(search, () => {
     clearTimeout(searchTimer)

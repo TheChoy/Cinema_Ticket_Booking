@@ -42,7 +42,7 @@ async function saveProfile() {
       date_of_birth: form.date_of_birth ? new Date(form.date_of_birth).toISOString() : null
     }
     await api.put('/users/me', body)
-    await fetchMe() // ← เพิ่มตรงนี้
+    await fetchMe()
     success.value = true
     setTimeout(() => success.value = false, 3000)
   } catch {

@@ -14,7 +14,7 @@ func StartEventLogWorker() {
 	msgs, err := database.RabbitCh.Consume(
 		database.EventLogQueue,
 		"",
-		true,  // auto-ack
+		true, 
 		false,
 		false,
 		false,

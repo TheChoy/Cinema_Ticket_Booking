@@ -43,7 +43,6 @@ export function useAdminLogs() {
       .filter(l => !filterDateTo.value || toBangkokDateString(l.created_at) <= filterDateTo.value)
   })
 
-  // re-fetch จาก backend เมื่อ filter ที่ส่ง query param เปลี่ยน
   watch([filterEvent, filterUserID, filterBookingID], fetchLogs)
 
   onMounted(() => {

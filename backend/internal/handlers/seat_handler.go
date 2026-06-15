@@ -45,8 +45,8 @@ func GetSeats(c *fiber.Ctx) error {
 func GenerateSeats(c *fiber.Ctx) error {
 	body := struct {
 		ShowtimeID string   `json:"showtime_id"`
-		Rows       []string `json:"rows"`    // เช่น ["A","B","C"]
-		SeatsPerRow int     `json:"seats_per_row"` // เช่น 10
+		Rows       []string `json:"rows"`   
+		SeatsPerRow int     `json:"seats_per_row"` 
 	}{}
 
 	if err := c.BodyParser(&body); err != nil {

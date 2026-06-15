@@ -44,7 +44,6 @@ func CreateBooking(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	// Redis Lock ที่นั่งทุกตัว
 	for _, seatID := range body.SeatIDs {
 		lockKey := "seat_lock:" + seatID
 		ok, err := database.RDB.SetNX(ctx, lockKey, uid, 5*time.Minute).Result()
@@ -52,7 +51,6 @@ func CreateBooking(c *fiber.Ctx) error {
 			return c.SendStatus(fiber.StatusInternalServerError)
 		}
 		if !ok {
-			// Publish event log: lock_failed
 			seatID, _ := primitive.ObjectIDFromHex(seatID)
 			database.PublishEventLog(models.EventLog{
 				ID:        primitive.NewObjectID(),
@@ -65,7 +63,6 @@ func CreateBooking(c *fiber.Ctx) error {
 		}
 	}
 
-	// เช็คว่าที่นั่งว่างทั้งหมด
 	seatCol := database.DB.Collection("seats")
 	cursor, err := seatCol.Find(ctx, bson.M{
 		"_id":    bson.M{"$in": seatIDs},
@@ -78,14 +75,12 @@ func CreateBooking(c *fiber.Ctx) error {
 	cursor.All(ctx, &availableSeats)
 
 	if len(availableSeats) != len(seatIDs) {
-		// ปลด lock ถ้าที่นั่งไม่ว่าง
 		for _, seatID := range body.SeatIDs {
 			database.RDB.Del(ctx, "seat_lock:"+seatID)
 		}
 		return c.Status(fiber.StatusConflict).JSON(fiber.Map{"message": "some seats are not available"})
 	}
 
-	// ดึง showtime เพื่อคำนวณราคา
 	showtimeCol := database.DB.Collection("showtimes")
 	var showtime models.Showtime
 	if err := showtimeCol.FindOne(ctx, bson.M{"_id": showtimeID}).Decode(&showtime); err != nil {
@@ -94,7 +89,6 @@ func CreateBooking(c *fiber.Ctx) error {
 
 	totalPrice := showtime.Price * float64(len(seatIDs))
 
-	// ดึง user ID จาก MongoDB
 	userCol := database.DB.Collection("users")
 	var user models.User
 	if err := userCol.FindOne(ctx, bson.M{"uid": uid}).Decode(&user); err != nil {
@@ -117,7 +111,6 @@ func CreateBooking(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 	
-	// Publish event log: booking_success
 	database.PublishEventLog(models.EventLog{
 		ID:        primitive.NewObjectID(),
 		Event:     "booking_success",
@@ -128,13 +121,11 @@ func CreateBooking(c *fiber.Ctx) error {
 		CreatedAt: time.Now(),
 	})
 
-	// อัพเดท status ที่นั่งเป็น locked
 	seatCol.UpdateMany(ctx, bson.M{"_id": bson.M{"$in": seatIDs}}, bson.M{"$set": bson.M{
 		"status":     "locked",
 		"booking_id": booking.ID,
 	}})
 
-	// Broadcast seat update
 	for _, seatID := range body.SeatIDs {
 		ws.H.Broadcast(body.ShowtimeID, ws.Message{
 			Type:   "seat_update",
@@ -300,13 +291,11 @@ func PayBooking(c *fiber.Ctx) error {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	// เปลี่ยน status ที่นั่งจาก locked เป็น booked
 	seatCol := database.DB.Collection("seats")
 	seatCol.UpdateMany(ctx, bson.M{"_id": bson.M{"$in": booking.SeatIDs}}, bson.M{"$set": bson.M{
 		"status": "booked",
 	}})
 
-	// Broadcast seat update
 	for _, seatID := range booking.SeatIDs {
 		ws.H.Broadcast(booking.ShowtimeID.Hex(), ws.Message{
 			Type:   "seat_update",
@@ -314,7 +303,7 @@ func PayBooking(c *fiber.Ctx) error {
 			Status: "booked",
 		})
 	}
-	// ปลด Redis Lock
+
 	for _, seatID := range booking.SeatIDs {
 		database.RDB.Del(ctx, "seat_lock:"+seatID.Hex())
 	}
@@ -412,20 +401,17 @@ func CancelBooking(c *fiber.Ctx) error {
 
 	bookingCol := database.DB.Collection("bookings")
 
-	// ดึง booking ก่อนเพื่อเอา seat IDs
 	var booking models.Booking
 	if err := bookingCol.FindOne(ctx, bson.M{"_id": id}).Decode(&booking); err != nil {
 		return fiber.ErrNotFound
 	}
 
-	// คืน status ที่นั่งเป็น available
 	seatCol := database.DB.Collection("seats")
 	seatCol.UpdateMany(ctx, bson.M{"_id": bson.M{"$in": booking.SeatIDs}}, bson.M{"$set": bson.M{
 		"status":     "available",
 		"booking_id": nil,
 	}})
 
-	// Broadcast seat update
 	for _, seatID := range booking.SeatIDs {
 		ws.H.Broadcast(booking.ShowtimeID.Hex(), ws.Message{
 			Type:   "seat_update",
@@ -434,10 +420,8 @@ func CancelBooking(c *fiber.Ctx) error {
 		})
 	}
 
-	// อัพเดท status booking เป็น cancelled
 	bookingCol.UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$set": bson.M{"status": "cancelled"}})
 
-	// Publish event log: seat_release
 	database.PublishEventLog(models.EventLog{
 		ID:        primitive.NewObjectID(),
 		Event:     "seat_release",
@@ -447,7 +431,6 @@ func CancelBooking(c *fiber.Ctx) error {
 		CreatedAt: time.Now(),
 	})
 	
-	// ปลด Redis Lock
 	for _, seatID := range booking.SeatIDs {
 		database.RDB.Del(ctx, "seat_lock:"+seatID.Hex())
 	}

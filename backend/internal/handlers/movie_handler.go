@@ -9,14 +9,10 @@ import (
 	"os"
 	"time"
 
-	// "cloud.google.com/go/storage"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
-	// "google.golang.org/api/option"
-
-	// "github.com/TheChoy/Cinema_Ticket_Booking/config"
 	"github.com/TheChoy/Cinema_Ticket_Booking/database"
 	"github.com/TheChoy/Cinema_Ticket_Booking/internal/models"
 )
@@ -45,7 +41,7 @@ func uploadPoster(file *multipart.FileHeader) (string, error) {
 		return "", err
 	}
 
-	url := fmt.Sprintf("http://localhost:8081/uploads/%s", filename)
+	url := fmt.Sprintf("/uploads/%s", filename)
 	return url, nil
 }
 
@@ -61,7 +57,6 @@ func CreateMovie(c *fiber.Ctx) error {
 		fmt.Sscanf(duration, "%d", &movie.Duration)
 	}
 
-	// รับรูปถ้ามี
 	if file, err := c.FormFile("poster"); err == nil {
 		url, err := uploadPoster(file)
 		if err != nil {

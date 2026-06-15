@@ -6,7 +6,7 @@ const api = axios.create({
 })
 
 api.interceptors.request.use(async (config) => {
-  await auth.authStateReady() // ← รอ Firebase โหลดก่อน
+  await auth.authStateReady()
   const user = auth.currentUser
   if (user) {
     const token = await user.getIdToken()

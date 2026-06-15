@@ -36,14 +36,12 @@ export function useSeat(showtimeId) {
         const seat = seats.value.find(s => s.id === msg.seat_id)
         if (seat) seat.status = msg.status
 
-        // ถ้าที่นั่งที่เลือกไว้โดน lock/booked ให้เอาออก
         if (msg.status !== 'available') {
           selectedSeats.value = selectedSeats.value.filter(s => s.id !== msg.seat_id)
         }
       }
     }
     ws.onclose = () => {
-      // reconnect อัตโนมัติถ้าหลุด
       setTimeout(() => connectWS(), 3000)
     }
   }

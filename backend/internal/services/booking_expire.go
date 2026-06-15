@@ -103,7 +103,6 @@ func expireBookings() {
 
 		bookingCol.UpdateOne(ctx, bson.M{"_id": b.ID}, bson.M{"$set": bson.M{"status": "cancelled"}})
 
-			// Publish event log: booking_timeout
 		bookingID := b.ID.(primitive.ObjectID)
 		var seatIDs []primitive.ObjectID
 		for _, s := range b.SeatIDs {
@@ -118,7 +117,6 @@ func expireBookings() {
 			CreatedAt: time.Now(),
 		})
 
-		// Broadcast seat update
 		showtimeID := b.ShowtimeID.(primitive.ObjectID).Hex()
 		for _, seatID := range b.SeatIDs {
 			ws.H.Broadcast(showtimeID, ws.Message{

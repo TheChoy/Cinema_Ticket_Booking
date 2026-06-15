@@ -12,7 +12,6 @@ export function useAdminMovies() {
 
   const genres = ['Action', 'Drama', 'Comedy', 'Horror', 'Sci-Fi', 'Romance', 'Animation']
 
-  // Showtime
   const showtimes = ref([])
   const loadingShowtimes = ref(false)
   const savingShowtime = ref(false)
@@ -86,7 +85,6 @@ export function useAdminMovies() {
     return `${Math.floor(min / 60)}h ${String(min % 60).padStart(2, '0')}m`
   }
 
-  // Showtime functions
   function formatDateTime(iso) {
     return new Date(iso).toLocaleString('th-TH', {
       month: 'short', day: 'numeric',

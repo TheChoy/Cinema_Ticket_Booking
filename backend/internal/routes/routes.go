@@ -17,7 +17,7 @@ func Setup(app *fiber.App) {
 	app.Get("/showtimes", handlers.GetShowtimes)
 	app.Get("/seats", handlers.GetSeats)
 
-	// WebSocket - real-time seat status
+	// WebSocket
 	app.Get("/ws/showtimes/:showtime_id", websocket.New(handlers.WSSeatStatus))
 
 	// Protected

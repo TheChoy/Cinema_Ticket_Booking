@@ -202,7 +202,7 @@ const {
 } = useBookingConfirm(bookingId)
 
 const showQRModal = ref(false)
-const selectedPayment = ref('qr') // default เลือก QR ไว้เลย
+const selectedPayment = ref('qr')
 
 onMounted(() => fetchBooking())
 </script>

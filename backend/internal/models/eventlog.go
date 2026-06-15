@@ -7,7 +7,7 @@ import (
 
 type EventLog struct {
 	ID        primitive.ObjectID   `bson:"_id,omitempty" json:"id"`
-	Event     string               `bson:"event" json:"event"`           // booking_success, booking_timeout, seat_release, lock_failed
+	Event     string               `bson:"event" json:"event"`   
 	UserID    *primitive.ObjectID  `bson:"user_id,omitempty" json:"user_id,omitempty"`
 	BookingID *primitive.ObjectID  `bson:"booking_id,omitempty" json:"booking_id,omitempty"`
 	SeatIDs   []primitive.ObjectID `bson:"seat_ids,omitempty" json:"seat_ids,omitempty"`

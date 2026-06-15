@@ -18,14 +18,12 @@ export function Login() {
       const userCredential = await signInWithEmailAndPassword(auth, form.email, form.password)
       const token = await userCredential.user.getIdToken(true)
 
-      // ส่ง token ไป backend เพื่อ verify + ดึง user_id/role จาก MongoDB
       const res = await api.post('/auth/login', {}, {
         headers: { Authorization: `Bearer ${token}` }
       })
 
-      const user = res.data // { _id, uid, email, role }
+      const user = res.data
 
-      // เก็บ token + user info
       localStorage.setItem('token', token)
       localStorage.setItem('user_id', user.id)
       localStorage.setItem('uid', user.uid)

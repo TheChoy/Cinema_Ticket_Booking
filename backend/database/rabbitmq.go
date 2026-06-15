@@ -18,7 +18,6 @@ func ConnectRabbitMQ() {
 	var conn *amqp.Connection
 	var err error
 
-	// Retry สูงสุด 10 ครั้ง ครั้งละ 3 วินาที
 	for i := 1; i <= 10; i++ {
 		conn, err = amqp.Dial(config.C.RabbitMQ)
 		if err == nil {

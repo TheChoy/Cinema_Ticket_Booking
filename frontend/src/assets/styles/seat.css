@@ -9,7 +9,6 @@
   padding: 2rem 1.25rem;
 }
 
-/* Info bar */
 .seat-info {
   background: #fff;
   border: 1px solid #e5e7eb;
@@ -37,7 +36,6 @@
   font-weight: 600;
 }
 
-/* Screen */
 .screen {
   text-align: center;
   margin-bottom: 1.5rem;
@@ -57,7 +55,6 @@
   color: #9ca3af;
 }
 
-/* Seat grid */
 .seat-rows {
   display: flex;
   flex-direction: column;
@@ -121,7 +118,6 @@
   border-color: #fca5a5; 
 }
 
-/* Legend */
 .legend {
   display: flex;
   gap: 1rem;
@@ -150,7 +146,6 @@
 .legend-box.booked { background: #fee2e2; border-color: #fca5a5; }
 .legend-box.locked { background: #fee2e2; border-color: #fca5a5; }
 
-/* Summary */
 .seat-summary {
   background: #fff;
   border: 1px solid #e5e7eb;

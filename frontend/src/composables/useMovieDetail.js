@@ -29,7 +29,6 @@ export function useMovieDetail(movieId) {
     }
   }
 
-  // จัดกลุ่มตามวันที่
 const groupedShowtimes = computed(() => {
   const groups = {}
   

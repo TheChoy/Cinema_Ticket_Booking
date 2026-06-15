@@ -8,7 +8,7 @@ import (
 )
 
 type Message struct {
-	Type   string `json:"type"`   // "seat_update" | "countdown"
+	Type   string `json:"type"`  
 	SeatID string `json:"seat_id,omitempty"`
 	Status string `json:"status,omitempty"`
 	BookingID string `json:"booking_id,omitempty"`
@@ -17,7 +17,7 @@ type Message struct {
 
 type Hub struct {
 	mu      sync.Mutex
-	rooms   map[string]map[*websocket.Conn]bool // showtime_id -> connections
+	rooms   map[string]map[*websocket.Conn]bool 
 }
 
 var H = &Hub{

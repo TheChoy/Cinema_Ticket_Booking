@@ -101,7 +101,7 @@ const showFilter = ref(false)
 const genres = ['Action', 'Drama', 'Comedy', 'Horror', 'Sci-Fi', 'Romance', 'Animation']
 
 function selectGenre(g) {
-  genre.value = genre.value === g ? '' : g  // toggle
+  genre.value = genre.value === g ? '' : g 
 }
 
 onMounted(() => fetchMovies())

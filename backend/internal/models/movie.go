@@ -11,7 +11,7 @@ type Movie struct {
 	Description string             `bson:"description" json:"description"`
 	Genre 		string 			   `bson:"genre" json:"genre"`
 	PosterURL   string             `bson:"poster_url" json:"poster_url"`
-	Duration    int                `bson:"duration" json:"duration"` // นาที
+	Duration    int                `bson:"duration" json:"duration"`
 	CreatedAt   time.Time          `bson:"created_at" json:"created_at"`
-	Status 		string			   `bson:"status" json:"status"`  //เผื่ออยากทำระบบให้ขึ้นหน้าคัมมิ่งซูน หรือกำลังฉาย
+	Status 		string			   `bson:"status" json:"status"`  
 }
