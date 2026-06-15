@@ -1,0 +1,156 @@
+{
+  "info": {
+    "_postman_id": "40ce6e6f-f8a3-4c8f-87eb-4b75eaf2df8d",
+    "name": "Cinema Ticket",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54441397",
+    "_collection_link": "https://go.postman.co/collection/54441397-40ce6e6f-f8a3-4c8f-87eb-4b75eaf2df8d?source=collection_link"
+  },
+  "item": [],
+  "variable": [
+    {
+      "key": "supabase_service_role_api_key_125z",
+      "secret": true
+    },
+    {
+      "key": "bearer_token_06tc",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_17rj",
+      "secret": true
+    },
+    {
+      "key": "bearer_token_0o6d",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0ajk",
+      "secret": true
+    },
+    {
+      "key": "bearer_token_11hr",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_0ajk",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0yb2",
+      "secret": true
+    },
+    {
+      "key": "bearer_token_0zxf",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0q6s",
+      "secret": true
+    },
+    {
+      "key": "bearer_token_01se",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_0q6s",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_0yb2",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_195i",
+      "secret": true
+    },
+    {
+      "key": "bearer_token_0x3i",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_195i",
+      "secret": true
+    },
+    {
+      "key": "bearer_token_0okf",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_0oxt",
+      "secret": true
+    },
+    {
+      "key": "bearer_token_1ajl",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_19ve",
+      "secret": true
+    },
+    {
+      "key": "bearer_token_1a9l",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_0q22",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_06of",
+      "secret": true
+    },
+    {
+      "key": "bearer_token_0hmz",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0oxt",
+      "secret": true
+    },
+    {
+      "key": "bearer_token_0xhy",
+      "secret": true
+    },
+    {
+      "key": "bearer_token_021f",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_120g",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_0w29",
+      "secret": true
+    },
+    {
+      "key": "bearer_token_0yra",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0w29",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_0vja",
+      "secret": true
+    },
+    {
+      "key": "bearer_token_0v04",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_0vja",
+      "secret": true
+    },
+    {
+      "key": "supabase_service_role_api_key_0qga",
+      "secret": true
+    },
+    {
+      "key": "bearer_token_1d8n",
+      "secret": true
+    }
+  ]
+}

@@ -3,7 +3,9 @@ package database
 import (
 	"encoding/json"
 	"log"
+	"time"
 
+	"github.com/TheChoy/Cinema_Ticket_Booking/config"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
@@ -13,9 +15,21 @@ var RabbitCh *amqp.Channel
 const EventLogQueue = "event_logs"
 
 func ConnectRabbitMQ() {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	var conn *amqp.Connection
+	var err error
+
+	// Retry สูงสุด 10 ครั้ง ครั้งละ 3 วินาที
+	for i := 1; i <= 10; i++ {
+		conn, err = amqp.Dial(config.C.RabbitMQ)
+		if err == nil {
+			break
+		}
+		log.Printf("RabbitMQ connect error (attempt %d/10): %v", i, err)
+		time.Sleep(3 * time.Second)
+	}
+
 	if err != nil {
-		log.Fatalf("RabbitMQ connect error: %v", err)
+		log.Fatalf("RabbitMQ failed after 10 attempts: %v", err)
 	}
 	RabbitConn = conn
 

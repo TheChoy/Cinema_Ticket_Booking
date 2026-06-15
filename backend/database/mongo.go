@@ -8,7 +8,7 @@ import (
     "go.mongodb.org/mongo-driver/mongo"
     "go.mongodb.org/mongo-driver/mongo/options"
 
-    "github.com/TheChoy/Cinema_Ticket_Booking/config"  // แก้ตรงนี้
+    "github.com/TheChoy/Cinema_Ticket_Booking/config"
 )
 var DB *mongo.Database
 
